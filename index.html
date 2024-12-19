@@ -30,7 +30,7 @@
             font-size: 1.5rem;
         }
 
-        .result {
+        .result, .retry-btn, .hint {
             font-size: 2rem;
             margin-top: 20px;
             text-align: center;
@@ -39,6 +39,20 @@
         .hidden {
             display: none;
         }
+
+        .retry-btn {
+            background-color: #61dafb;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .retry-btn:hover {
+            background-color: #21a1f1;
+        }
     </style>
 </head>
 <body>
@@ -46,94 +60,86 @@
         Score: <span id="score">0</span> | Target: 100
     </div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div class="result hidden" id="result">You Win! Congratulations!</div>
+    <div class="result hidden" id="result"></div>
+    <button class="retry-btn hidden" id="retryBtn">Retry</button>
+    <div class="hint hidden" id="hint">Hint: You don't always need to reach the target; some inspection can help.</div>
+
     <script>
-        // Game settings
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
-        const blockSize = 20; // Size of each block (snake and food)
+        const blockSize = 20;
         const canvasSize = 400;
-        let snake = [{ x: 160, y: 200 }, { x: 140, y: 200 }, { x: 120, y: 200 }]; // Initial snake body
-        let food = generateFood(); // Initial food position
-        let direction = "RIGHT";
-        let score = 0;
-        let gameInterval;
-        let gameSpeed = 100; // 100 ms, controls snake speed
+        let snake, food, direction, score, gameInterval, gameSpeed;
 
-        // Start the game
+        function resetGame() {
+            snake = [{ x: 160, y: 200 }, { x: 140, y: 200 }, { x: 120, y: 200 }];
+            food = generateFood();
+            direction = "RIGHT";
+            score = 0;
+            gameSpeed = 100;
+            document.getElementById("score").textContent = score;
+            document.getElementById("gameCanvas").classList.remove("hidden");
+            document.getElementById("result").classList.add("hidden");
+            document.getElementById("retryBtn").classList.add("hidden");
+            document.getElementById("hint").classList.add("hidden");
+            startGame();
+        }
+
         function startGame() {
             gameInterval = setInterval(updateGame, gameSpeed);
             document.addEventListener("keydown", changeDirection);
         }
 
-        // Update the game
         function updateGame() {
             moveSnake();
             if (checkCollision()) {
                 gameOver();
+                return;
             }
             if (checkFoodCollision()) {
-                score += 10; // Increase score by 10 points
+                score += 10;
                 document.getElementById("score").textContent = score;
 
                 if (score >= 100) {
                     winGame();
                 } else {
-                    increaseSpeed(); // Increase speed after eating food
-                    food = generateFood(); // Re-generate food after eating
+                    increaseSpeed();
+                    food = generateFood();
                 }
             }
             drawGame();
         }
 
-        // Move the snake
         function moveSnake() {
-            let head = { x: snake[0].x, y: snake[0].y };
+            let head = { ...snake[0] };
             switch (direction) {
-                case "UP":
-                    head.y -= blockSize;
-                    break;
-                case "DOWN":
-                    head.y += blockSize;
-                    break;
-                case "LEFT":
-                    head.x -= blockSize;
-                    break;
-                case "RIGHT":
-                    head.x += blockSize;
-                    break;
+                case "UP": head.y -= blockSize; break;
+                case "DOWN": head.y += blockSize; break;
+                case "LEFT": head.x -= blockSize; break;
+                case "RIGHT": head.x += blockSize; break;
             }
-            snake.unshift(head); // Add new head to the front
-            snake.pop(); // Remove tail of the snake
+            snake.unshift(head);
+            snake.pop();
         }
 
-        // Check if snake collided with the walls or itself
         function checkCollision() {
             let head = snake[0];
-            // Wall collision
-            if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize) {
-                return true;
-            }
-            // Self collision
+            if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize) return true;
             for (let i = 1; i < snake.length; i++) {
-                if (head.x === snake[i].x && head.y === snake[i].y) {
-                    return true;
-                }
+                if (head.x === snake[i].x && head.y === snake[i].y) return true;
             }
             return false;
         }
 
-        // Check if snake eats the food
         function checkFoodCollision() {
             let head = snake[0];
             if (head.x === food.x && head.y === food.y) {
-                snake.push({ x: food.x, y: food.y }); // Grow the snake
+                snake.push({ ...food });
                 return true;
             }
             return false;
         }
 
-        // Generate a random position for the food in one of the corners
         function generateFood() {
             const corners = [
                 { x: 0, y: 0 },
@@ -144,60 +150,50 @@
             return corners[Math.floor(Math.random() * corners.length)];
         }
 
-        // Increase the speed by 10%
         function increaseSpeed() {
-            gameSpeed *= 0.9; // Increase speed by 10%
-            clearInterval(gameInterval); // Clear the current interval
-            gameInterval = setInterval(updateGame, gameSpeed); // Set new interval with updated speed
+            gameSpeed *= 0.9;
+            clearInterval(gameInterval);
+            gameInterval = setInterval(updateGame, gameSpeed);
         }
 
-        // Change the direction based on arrow keys
         function changeDirection(event) {
-            if (event.key === "ArrowUp" && direction !== "DOWN") {
-                direction = "UP";
-            }
-            if (event.key === "ArrowDown" && direction !== "UP") {
-                direction = "DOWN";
-            }
-            if (event.key === "ArrowLeft" && direction !== "RIGHT") {
-                direction = "LEFT";
-            }
-            if (event.key === "ArrowRight" && direction !== "LEFT") {
-                direction = "RIGHT";
-            }
+            const key = event.key;
+            if (key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+            if (key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+            if (key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+            if (key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
         }
 
-        // Draw the snake, food, and scoreboard
         function drawGame() {
-            ctx.clearRect(0, 0, canvasSize, canvasSize); // Clear the canvas
-            // Draw the snake
-            for (let i = 0; i < snake.length; i++) {
-                ctx.fillStyle = i === 0 ? "green" : "lime"; // Head is dark green, body is light green
-                ctx.fillRect(snake[i].x, snake[i].y, blockSize, blockSize);
-            }
-            // Draw the food
+            ctx.clearRect(0, 0, canvasSize, canvasSize);
+            snake.forEach((segment, i) => {
+                ctx.fillStyle = i === 0 ? "green" : "lime";
+                ctx.fillRect(segment.x, segment.y, blockSize, blockSize);
+            });
             ctx.fillStyle = "red";
             ctx.fillRect(food.x, food.y, blockSize, blockSize);
         }
 
-        // Display game over screen
         function gameOver() {
             clearInterval(gameInterval);
             document.removeEventListener("keydown", changeDirection);
             document.getElementById("result").textContent = "Game Over! Try Again!";
             document.getElementById("result").classList.remove("hidden");
+            document.getElementById("retryBtn").classList.remove("hidden");
+            document.getElementById("hint").classList.remove("hidden");
+            document.getElementById("gameCanvas").classList.add("hidden");
         }
 
-        // Display win screen
         function winGame() {
             clearInterval(gameInterval);
             document.removeEventListener("keydown", changeDirection);
             document.getElementById("result").textContent = "You Win! Congratulations!";
             document.getElementById("result").classList.remove("hidden");
+            document.getElementById("retryBtn").classList.remove("hidden");
         }
 
-        // Start the game when the page loads
-        startGame();
+        document.getElementById("retryBtn").addEventListener("click", resetGame);
+        resetGame();
     </script>
 </body>
 </html>
