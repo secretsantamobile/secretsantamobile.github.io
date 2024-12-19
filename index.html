@@ -20,7 +20,6 @@
             align-items: center;
             height: 100vh;
             text-align: center;
-            padding: 20px;
             flex-direction: column;
         }
 
@@ -91,8 +90,9 @@
             cursor: pointer;
             font-size: 2rem;
             transition: background 0.3s;
-            min-width: 50px;
-            min-height: 50px;
+            min-width: 60px;
+            min-height: 60px;
+            padding: 12px;
         }
 
         .control-btn:hover {
@@ -112,18 +112,20 @@
         }
 
         .arrow-img {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             background-color: #ff6700;
             border-radius: 50%;
-            padding: 10px;
+            padding: 15px;
+            font-size: 2rem;
+            color: white;
             cursor: pointer;
         }
 
         /* Mobile only styles */
         @media (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 0;
             }
 
             #header {
@@ -139,8 +141,8 @@
             }
 
             .retry-btn {
-                font-size: 1.2rem;
-                padding: 10px 20px;
+                font-size: 1.3rem;
+                padding: 12px 25px;
             }
 
             .joystick-controls {
@@ -148,18 +150,18 @@
             }
 
             .arrow-img {
-                font-size: 1.5rem;
-                width: 40px;
-                height: 40px;
-                padding: 8px;
+                font-size: 1.8rem;
+                width: 70px;
+                height: 70px;
+                padding: 15px;
             }
 
             .direction-buttons, .horizontal-buttons {
-                gap: 10px;
+                gap: 15px;
             }
 
             .joystick {
-                gap: 15px;
+                gap: 25px;
             }
         }
     </style>
@@ -324,7 +326,7 @@
             document.getElementById("header").textContent = "Surprise!";
         }
 
-        // Mobile joystick buttons functionality
+        // Handle button clicks for direction control
         document.getElementById("upBtn").addEventListener("click", () => {
             if (direction !== "DOWN") direction = "UP";
         });
