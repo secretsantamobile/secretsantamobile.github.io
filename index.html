@@ -83,7 +83,7 @@
             food = generateFood();
             direction = "RIGHT";
             score = 0;
-            gameSpeed = 100;
+            gameSpeed = 120;
             document.getElementById("score").textContent = score;
             document.getElementById("gameCanvas").classList.remove("hidden");
             document.getElementById("result").classList.add("hidden");
@@ -157,7 +157,7 @@
         }
 
         function increaseSpeed() {
-            gameSpeed *= 0.8;
+            gameSpeed *= 0.7;
             clearInterval(gameInterval);
             gameInterval = setInterval(updateGame, gameSpeed);
         }
@@ -193,7 +193,7 @@
         function winGame() {
             clearInterval(gameInterval);
             document.removeEventListener("keydown", changeDirection);
-            document.getElementById("result").textContent = "You Win! Congratulations!";
+            document.getElementById("result").textContent = "You Win! Congratulations! UlVZVC1YTThKVFctUVRCNw== (BASE64?)";
             document.getElementById("result").classList.remove("hidden");
             document.getElementById("retryBtn").classList.remove("hidden");
         }
