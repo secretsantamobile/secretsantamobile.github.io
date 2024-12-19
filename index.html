@@ -5,59 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #282c34;
-            color: white;
+            padding: 20px;
+            text-align: center;
         }
 
         canvas {
-            border: 2px solid #fff;
-            background-color: #000;
+            border: 4px solid #fff;
+            background: #000;
+            margin-top: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
         }
 
         .scoreboard {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.5rem;
+            font-size: 2rem;
+            margin-bottom: 20px;
         }
 
         .result, .retry-btn, .hint {
-            font-size: 2rem;
-            margin-top: 20px;
-            text-align: center;
+            font-size: 1.8rem;
+            margin-top: 30px;
+        }
+
+        .retry-btn {
+            background: #61dafb;
+            color: black;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: background 0.3s;
+        }
+
+        .retry-btn:hover {
+            background: #21a1f1;
         }
 
         .hidden {
             display: none;
         }
-
-        .retry-btn {
-            background-color: #61dafb;
-            color: black;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.5rem;
-        }
-
-        .retry-btn:hover {
-            background-color: #21a1f1;
-        }
     </style>
 </head>
 <body>
     <div class="scoreboard">
-        Score: <span id="score">0</span> | Target: 100
+        Score: <span id="score">0</span> | Target 100
     </div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <div class="result hidden" id="result"></div>
