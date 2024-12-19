@@ -122,8 +122,44 @@
 
         /* Mobile only styles */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            #header {
+                font-size: 1.5rem;
+            }
+
+            .scoreboard {
+                font-size: 1.5rem;
+            }
+
+            .result, .retry-btn, .hint {
+                font-size: 1.5rem;
+            }
+
+            .retry-btn {
+                font-size: 1.2rem;
+                padding: 10px 20px;
+            }
+
             .joystick-controls {
                 display: flex;
+            }
+
+            .arrow-img {
+                font-size: 1.5rem;
+                width: 40px;
+                height: 40px;
+                padding: 8px;
+            }
+
+            .direction-buttons, .horizontal-buttons {
+                gap: 10px;
+            }
+
+            .joystick {
+                gap: 15px;
             }
         }
     </style>
@@ -302,10 +338,11 @@
             if (direction !== "LEFT") direction = "RIGHT";
         });
 
+        // Retry button
         document.getElementById("retryBtn").addEventListener("click", resetGame);
+
+        // Initialize the game
         resetGame();
     </script>
 </body>
 </html>
-
-
