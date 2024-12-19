@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+
+            
+            
+            <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -68,7 +71,7 @@
         }
 
         .joystick-controls {
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             gap: 15px;
@@ -120,6 +123,12 @@
             cursor: pointer;
         }
 
+        /* Mobile only styles */
+        @media (max-width: 768px) {
+            .joystick-controls {
+                display: flex;
+            }
+        }
     </style>
 </head>
 <body>
@@ -152,6 +161,7 @@
         const canvasSize = 400;
         let snake, food, direction, score, gameInterval, gameSpeed;
 
+        // Reset the game state
         function resetGame() {
             snake = [{ x: 160, y: 200 }, { x: 140, y: 200 }, { x: 120, y: 200 }];
             food = generateFood();
@@ -172,6 +182,7 @@
             document.addEventListener("keydown", changeDirection);
         }
 
+        // Update the game logic
         function updateGame() {
             moveSnake();
             if (checkCollision()) {
@@ -191,6 +202,7 @@
             drawGame();
         }
 
+        // Move snake based on the current direction
         function moveSnake() {
             let head = { ...snake[0] };
             switch (direction) {
@@ -203,6 +215,7 @@
             snake.pop();
         }
 
+        // Check for collisions with walls or itself
         function checkCollision() {
             let head = snake[0];
             if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize) return true;
@@ -212,6 +225,7 @@
             return false;
         }
 
+        // Check if snake has eaten food
         function checkFoodCollision() {
             let head = snake[0];
             if (head.x === food.x && head.y === food.y) {
@@ -221,20 +235,22 @@
             return false;
         }
 
+        // Generate food at random position
         function generateFood() {
-            // Randomly generate food position
             return {
                 x: Math.floor(Math.random() * (canvasSize / blockSize)) * blockSize,
                 y: Math.floor(Math.random() * (canvasSize / blockSize)) * blockSize
             };
         }
 
+        // Increase game speed
         function increaseSpeed() {
             gameSpeed *= 0.9;
             clearInterval(gameInterval);
             gameInterval = setInterval(updateGame, gameSpeed);
         }
 
+        // Handle direction change
         function changeDirection(event) {
             const key = event.key;
             if (key === "ArrowUp" && direction !== "DOWN") direction = "UP";
@@ -243,6 +259,7 @@
             if (key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
         }
 
+        // Draw the snake and food
         function drawGame() {
             ctx.clearRect(0, 0, canvasSize, canvasSize);
             snake.forEach((segment, i) => {
@@ -253,6 +270,7 @@
             ctx.fillRect(food.x, food.y, blockSize, blockSize);
         }
 
+        // End the game
         function gameOver() {
             clearInterval(gameInterval);
             document.removeEventListener("keydown", changeDirection);
@@ -263,6 +281,7 @@
             document.getElementById("gameCanvas").classList.add("hidden");
         }
 
+        // Win the game
         function winGame() {
             clearInterval(gameInterval);
             document.removeEventListener("keydown", changeDirection);
@@ -272,9 +291,24 @@
             document.getElementById("header").textContent = "Surprise!";
         }
 
+        // Mobile joystick buttons functionality
+        document.getElementById("upBtn").addEventListener("click", () => {
+            if (direction !== "DOWN") direction = "UP";
+        });
+        document.getElementById("downBtn").addEventListener("click", () => {
+            if (direction !== "UP") direction = "DOWN";
+        });
+        document.getElementById("leftBtn").addEventListener("click", () => {
+            if (direction !== "RIGHT") direction = "LEFT";
+        });
+        document.getElementById("rightBtn").addEventListener("click", () => {
+            if (direction !== "LEFT") direction = "RIGHT";
+        });
+
         document.getElementById("retryBtn").addEventListener("click", resetGame);
         resetGame();
     </script>
 </body>
 </html>
+
 
