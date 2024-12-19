@@ -61,6 +61,12 @@
             display: none;
         }
 
+        #header {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
         .joystick-controls {
             display: flex;
             flex-direction: column;
@@ -105,49 +111,19 @@
             gap: 20px;
         }
 
-        /* Mobile-specific styles */
-        @media (max-width: 768px) {
-            .joystick-controls {
-                display: flex;
-            }
-        }
-
-        /* Desktop-specific styles */
-        @media (min-width: 769px) {
-            .joystick-controls {
-                display: none;
-            }
-        }
-
-        .arrow-btn {
+        .arrow-img {
             width: 50px;
             height: 50px;
             background-color: #ff6700;
             border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 10px;
             cursor: pointer;
-            color: white;
-            font-size: 2rem;
-            user-select: none;
         }
 
-        /* Surprise header styles */
-        .surprise-header {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #ff6700;
-        }
     </style>
 </head>
 <body>
-    <!-- Surprise Header -->
-    <div class="surprise-header" id="surpriseHeader">
-        Surprise ahead, Reach the target!
-    </div>
-
+    <div id="header">Surprise awaits at the target!</div>
     <div class="scoreboard">
         Score: <span id="score">0</span> | Target 100
     </div>
@@ -156,17 +132,16 @@
     <button class="retry-btn hidden" id="retryBtn">Retry</button>
     <div class="hint hidden" id="hint">Hint: You don't always need to reach the target; some inspection can help.</div>
 
-    <!-- Joystick Controls for mobile -->
     <div class="joystick-controls">
         <div class="direction-buttons">
-            <button class="arrow-btn" id="upBtn">↑</button>
+            <button class="arrow-img" id="upBtn">↑</button>
         </div>
         <div class="joystick">
-            <button class="arrow-btn" id="leftBtn">←</button>
-            <button class="arrow-btn" id="rightBtn">→</button>
+            <button class="arrow-img" id="leftBtn">←</button>
+            <button class="arrow-img" id="rightBtn">→</button>
         </div>
         <div class="direction-buttons">
-            <button class="arrow-btn" id="downBtn">↓</button>
+            <button class="arrow-img" id="downBtn">↓</button>
         </div>
     </div>
 
@@ -175,7 +150,7 @@
         const ctx = canvas.getContext("2d");
         const blockSize = 20;
         const canvasSize = 400;
-        let snake, food, direction, score, gameInterval, gameSpeed, canTurn;
+        let snake, food, direction, score, gameInterval, gameSpeed;
 
         function resetGame() {
             snake = [{ x: 160, y: 200 }, { x: 140, y: 200 }, { x: 120, y: 200 }];
@@ -183,18 +158,16 @@
             direction = "RIGHT";
             score = 0;
             gameSpeed = 120;
-            canTurn = true;
             document.getElementById("score").textContent = score;
             document.getElementById("gameCanvas").classList.remove("hidden");
             document.getElementById("result").classList.add("hidden");
             document.getElementById("retryBtn").classList.add("hidden");
             document.getElementById("hint").classList.add("hidden");
-            document.getElementById("surpriseHeader").textContent = "Surprise ahead, Reach the target!";
+            document.getElementById("header").textContent = "Surprise awaits at the target!";
             startGame();
         }
 
         function startGame() {
-            clearInterval(gameInterval);
             gameInterval = setInterval(updateGame, gameSpeed);
             document.addEventListener("keydown", changeDirection);
         }
@@ -216,7 +189,6 @@
                 }
             }
             drawGame();
-            canTurn = true; // Allow direction change after the snake moves
         }
 
         function moveSnake() {
@@ -250,13 +222,11 @@
         }
 
         function generateFood() {
-            const corners = [
-                { x: 0, y: 0 },
-                { x: 0, y: canvasSize - blockSize },
-                { x: canvasSize - blockSize, y: 0 },
-                { x: canvasSize - blockSize, y: canvasSize - blockSize }
-            ];
-            return corners[Math.floor(Math.random() * corners.length)];
+            // Randomly generate food position
+            return {
+                x: Math.floor(Math.random() * (canvasSize / blockSize)) * blockSize,
+                y: Math.floor(Math.random() * (canvasSize / blockSize)) * blockSize
+            };
         }
 
         function increaseSpeed() {
@@ -266,14 +236,11 @@
         }
 
         function changeDirection(event) {
-            if (!canTurn) return; // Prevent turning before the snake moves
-
             const key = event.key;
             if (key === "ArrowUp" && direction !== "DOWN") direction = "UP";
             if (key === "ArrowDown" && direction !== "UP") direction = "DOWN";
             if (key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
             if (key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
-            canTurn = false; // Disable further turns until snake moves
         }
 
         function drawGame() {
@@ -302,18 +269,12 @@
             document.getElementById("result").textContent = "You Win! Congratulations! UlVZVC1YTThKVFctUVRCNw== (BASE64?)";
             document.getElementById("result").classList.remove("hidden");
             document.getElementById("retryBtn").classList.remove("hidden");
-            document.getElementById("surpriseHeader").textContent = "Surprise!";
+            document.getElementById("header").textContent = "Surprise!";
         }
 
         document.getElementById("retryBtn").addEventListener("click", resetGame);
-
-        // Joystick controls for mobile
-        document.getElementById("upBtn").addEventListener("click", () => changeDirection({ key: "ArrowUp" }));
-        document.getElementById("downBtn").addEventListener("click", () => changeDirection({ key: "ArrowDown" }));
-        document.getElementById("leftBtn").addEventListener("click", () => changeDirection({ key: "ArrowLeft" }));
-        document.getElementById("rightBtn").addEventListener("click", () => changeDirection({ key: "ArrowRight" }));
-
         resetGame();
     </script>
 </body>
 </html>
+
